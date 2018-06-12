@@ -68,9 +68,8 @@ export default function withMobX(...args) {
         defaultStoreFactory = StoreFactory;
     }
     const storeConstructorArgs = [],
-          storeFactories = [],
-          storeNames = [],
-          storeNamesSet = new Set();
+          storeFactories = [];
+    let storeNames = new Set();
     while (args.length) {
         count += 1;
         const name = args.shift();
@@ -94,7 +93,7 @@ export default function withMobX(...args) {
                 );
             }
         }
-        if (storeNamesSet.has(name)) {
+        if (storeNames.has(name)) {
             throw new Error(
                 'duplicate store name "' + name + '" within current invocation'
             );
@@ -134,9 +133,9 @@ export default function withMobX(...args) {
         }
         storeConstructorArgs.push(constructorArgs);
         storeFactories.push(factory);
-        storeNames.push(name);
-        storeNamesSet.add(name);
+        storeNames.add(name);
     }
+    storeNames = [...storeNames];
     return function (Component) {
         let _Component;
         if (Component instanceof App) {
