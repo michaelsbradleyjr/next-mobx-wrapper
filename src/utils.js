@@ -1,7 +1,7 @@
 import {inject, observer, Provider} from 'mobx-react';
 import React from 'react';
 
-const cleanProps = (props) => {
+export const cleanProps = (props) => {
     const _props = {};
     Object.keys(_props).foreEach((key) => {
         if (!['initialStoreConstructorArgs',
@@ -12,7 +12,7 @@ const cleanProps = (props) => {
     return _props;
 };
 
-const componentSetup = (storeFactories, storeNames, props) => {
+export const componentSetup = (storeFactories, storeNames, props) => {
     return [
         makeStores(
             props.initialStoreConstructorArgs,
@@ -24,7 +24,7 @@ const componentSetup = (storeFactories, storeNames, props) => {
     ];
 };
 
-const ctxExtrasSetup = (ctx, initialStoreConstructorArgs, isServer) => {
+export const ctxExtrasSetup = (ctx, initialStoreConstructorArgs, isServer) => {
     let _initialStoreConstructorArgs, _isServer;
     if (initialStoreConstructorArgs === undefined) {
         _initialStoreConstructorArgs = {};
@@ -41,7 +41,7 @@ const ctxExtrasSetup = (ctx, initialStoreConstructorArgs, isServer) => {
     return {_initialStoreConstructorArgs, _isServer};
 };
 
-const isConstructor = (
+export const isConstructor = (
     () => {
         if (typeof Proxy === 'undefined') {
             return null;
@@ -62,7 +62,7 @@ const isConstructor = (
     }
 )();
 
-const makeStores = (
+export const makeStores = (
     (initialStoreConstructorArgs,
      isServer,
      storeFactories,
@@ -77,7 +77,7 @@ const makeStores = (
      }
 );
 
-const ordinalSuffixOf = (i) => {
+export const ordinalSuffixOf = (i) => {
     const j = i % 10,
           k = i % 100;
     let n;
@@ -93,7 +93,7 @@ const ordinalSuffixOf = (i) => {
     return n;
 };
 
-const resolveStoreConstructorArgs = (
+export const resolveStoreConstructorArgs = (
     async (ctx,
            initialStoreConstructorArgs,
            isServer,
@@ -127,7 +127,14 @@ const resolveStoreConstructorArgs = (
            }
 );
 
-const wrapComponent = (Component, storeNames, stores, props) => {
+export const wrapAppComponent = (Component, props) => {
+    return React.createElement(
+        Component,
+        props
+    );
+};
+
+export const wrapComponent = (Component, storeNames, stores, props) => {
     return React.createElement(
         Provider,
         stores,

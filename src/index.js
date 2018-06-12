@@ -1,9 +1,13 @@
 import App from 'next/app';
-import React from 'react';
 
-import * as utils from './utils';
-import {StoreFactory, StoreHouse, defaultStoreHouse} from './store';
-export {StoreFactory, StoreHouse, defaultStoreHouse} from './store';
+import {defaultStoreHouse, StoreFactory, StoreHouse} from './store';
+import {componentSetup,
+        ordinalSuffixOf,
+        resolveStoreConstructorArgs,
+        wrapAppComponent,
+        wrapComponent} from './utils';
+
+export * from './store';
 
 // notes, todo
 /* =============================================================================
@@ -79,9 +83,9 @@ export default function withMobX(...args) {
                 );
             } else {
                 throw new TypeError(
-                    utils.ordinalSuffixOf(count) +
+                    ordinalSuffixOf(count) +
                         ' argument must be a string when ' +
-                        utils.ordinalSuffixOf(count - 1) +
+                        ordinalSuffixOf(count - 1) +
                         ' argument is an instance of (or valid constructor' +
                         ' argument for) the default StoreFactory or is a' +
                         ' non-string iterable or is a constructor that has' +
@@ -99,7 +103,7 @@ export default function withMobX(...args) {
         if (!args.length) {
             throw new TypeError(
                 'expects ' + count + ' arguments when ' +
-                    utils.ordinalSuffixOf(count - 1) + ' argument is a string'
+                    ordinalSuffixOf(count - 1) + ' argument is a string'
             );
         }
         let factory = args.shift();
@@ -112,10 +116,10 @@ export default function withMobX(...args) {
         }
         if (!(factory instanceof StoreFactory)) {
             throw new TypeError(
-                utils.ordinalSuffixOf(count) +
+                ordinalSuffixOf(count) +
                     ' argument must be an instance of (or valid constructor' +
                     ' argument for) the default StoreFactory when' +
-                    utils.ordinalSuffixOf(count - 1) + ' argument is a string'
+                    ordinalSuffixOf(count - 1) + ' argument is a string'
             );
         }
         let constructorArgs;
@@ -138,23 +142,23 @@ export default function withMobX(...args) {
         if (Component instanceof App) {
             const AppComponent = Component;
             _Component = function ({Component, pageProps, router}) {
-                const [stores, _pageProps] = utils.componentSetup(
+                const [stores, _pageProps] = componentSetup(
                     storeFactories, storeNames, pageProps
                 );
                 const appComponentProps = {router};
                 appComponentProps.Component = function (props) {
-                    return utils.wrapComponent(
+                    return wrapComponent(
                         Component, storeNames, stores, props
                     );
                 };
                 appComponentProps.pageProps = _pageProps;
-                return React.createElement(AppComponent, appComponentProps);
+                return wrapAppComponent(AppComponent, appComponentProps);
             };
 
             _Component.getInitialProps = async function (
                 {Component, ctx, initialStoreConstructorArgs, isServer, router}
             ) {
-                const pageProps = await utils.resolveStoreConstructorArgs(
+                const pageProps = await resolveStoreConstructorArgs(
                     ctx,
                     initialStoreConstructorArgs,
                     isServer,
@@ -172,17 +176,17 @@ export default function withMobX(...args) {
             };
         } else {
             _Component = function (props) {
-                return utils.wrapComponent(
+                return wrapComponent(
                     Component,
                     storeNames,
-                    ...utils.componentSetup(storeFactories, storeNames, props)
+                    ...componentSetup(storeFactories, storeNames, props)
                 );
             };
 
             _Component.getInitialProps = async function (
                 {initialStoreConstructorArgs, isServer, ...ctx}
             ) {
-                const props = await utils.resolveStoreConstructorArgs(
+                const props = await resolveStoreConstructorArgs(
                     ctx,
                     initialStoreConstructorArgs,
                     isServer,

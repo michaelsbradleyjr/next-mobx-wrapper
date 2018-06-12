@@ -1,4 +1,4 @@
-import * as utils from './utils';
+import {isConstructor} from './utils';
 
 export class StoreFactory {
     constructor(Store, {stores = defaultStoreHouse} = {}) {
@@ -10,7 +10,7 @@ export class StoreFactory {
             throw new TypeError('expects no more than 2 arguments');
         }
         if (typeof Store !== 'function'
-            || (utils.isConstructor !== null && !utils.isConstructor(Store))) {
+            || (isConstructor !== null && !isConstructor(Store))) {
             throw new TypeError(
                 '1st argument must be a function that is invokable via the' +
                     ' "new" operator'
