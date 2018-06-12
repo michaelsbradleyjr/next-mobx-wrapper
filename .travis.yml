@@ -1,0 +1,11 @@
+language: node_js
+node_js:
+- stable
+deploy:
+  provider: npm
+  email: michaelsbradleyjr@gmail.com
+  api_key: $NPM_TOKEN
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: michaelsbradleyjr/next-mobx-wrapper
