@@ -81,8 +81,8 @@ export default function withMobX(...args) {
         defaultStoreFactory;
     if (args0
         && (typeof args0 === 'function')
-        && (args0 === StoreFactory
-            || (args0.prototype instanceof StoreFactory))) {
+        && ((args0.prototype instanceof StoreFactory)
+            || (args0 === StoreFactory))) {
         defaultStoreFactory = args0;
         count += 1;
         args.shift();
