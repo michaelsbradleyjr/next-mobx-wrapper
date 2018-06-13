@@ -55,6 +55,9 @@ export * from './store';
     it's stricter about the relationships between Store constructors and
     instances and StoreFactory constructors
 
+(+) revise impl of extendsDocument to avoid use of eval;
+    for alt approaches see: https://arunoda.me/blog/ssr-and-server-only-modules
+
 (+) formal tests
 
 (+) docs and examples

@@ -65,8 +65,6 @@ export const extendsApp = (Component) => (
 );
 
 export const extendsDocument = (
-    // a non-eval approach would probably be better; need to experiment, test:
-    // https://arunoda.me/blog/ssr-and-server-only-modules
     () => {
         let Document;
         try {
