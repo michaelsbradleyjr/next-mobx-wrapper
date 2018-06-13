@@ -45,7 +45,7 @@ export class StoreFactory {
             _store = new Store(...constructorArgs);
             stores.set(name, isServer ? Store : _store);
         } else {
-            stores.enforce(Store, isServer, name);
+            stores.handle(Store, isServer, name);
             _store = isServer
                 ? new Store(...constructorArgs)
                 : stores.get(name);
@@ -71,7 +71,7 @@ export class StoreHouse extends Map {
         Object.assign(this, {singletons, warnOnSingletons});
     }
 
-    enforce(ExtraStore, isServer, name) {
+    handle(ExtraStore, isServer, name) {
         const len = arguments.length;
         if (len !== 3) {
             throw new TypeError('expects exactly 3 arguments');
