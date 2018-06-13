@@ -64,13 +64,21 @@ export const extendsApp = (Component) => (
     (Component.prototype instanceof App) || (Component === App)
 );
 
+/* global require */
 export const extendsDocument = (
     () => {
         let Document;
-        try {
-            Document = eval('require("next/document")').default;
-        } catch (e) {
-            Document = 'undefined';
+        if (isNode()) {
+            try {
+                // Document = eval('require("next/document")').default;
+                // ^ prefer not to use eval... test solution below with
+                // webpack-bundle-anaylyzer
+                const p = 'next/document',
+                      r = (m) => require(m);
+                Document = r(p).default;
+            } catch (e) {
+                Document = 'undefined';
+            }
         }
         return (
             Document === 'undefined'
