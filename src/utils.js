@@ -45,14 +45,14 @@ export const componentSetup = (
 
 export const ctxExtrasSetup = (ctx, initialStoreConstructorArgs, isServer) => {
     let _initialStoreConstructorArgs, _isServer;
-    if (initialStoreConstructorArgs === undefined) {
+    if (typeof initialStoreConstructorArgs === 'undefined') {
         _initialStoreConstructorArgs = {};
     } else {
         _initialStoreConstructorArgs = (
             {...initialStoreConstructorArgs}
         );
     }
-    if (isServer === undefined) {
+    if (typeof isServer === 'undefined') {
         _isServer = !!ctx.req;
     } else {
         _isServer = !!isServer;
@@ -74,14 +74,12 @@ export const extendsDocument = (
                 // ^ prefer not to use eval... test solution below with
                 // webpack-bundle-anaylyzer
                 const p = 'next/document',
-                      r = (m) => require(m);
-                Document = r(p).default;
-            } catch (e) {
-                Document = 'undefined';
-            }
+                      u = (m) => require(m);
+                Document = u(p).default;
+            } catch (e) {}
         }
         return (
-            Document === 'undefined'
+            typeof Document === 'undefined'
                 ? (Component) => false
                 : (Component) => (
                     (Component.prototype instanceof Document)
