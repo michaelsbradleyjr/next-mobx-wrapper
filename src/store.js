@@ -41,8 +41,6 @@ export class StoreFactory {
         const {Store, stores} = this;
         let _store;
 
-        // revise stores.enforce so the following is cleaner
-
         if (!stores.has(name)) {
             _store = new Store(...constructorArgs);
             stores.set(name, isServer ? Store : _store);
