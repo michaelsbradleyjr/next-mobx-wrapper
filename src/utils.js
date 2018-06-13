@@ -12,17 +12,35 @@ export const cleanProps = (props) => {
     return _props;
 };
 
-export const componentSetup = (storeFactories, storeNames, props) => {
-    return [
-        makeStores(
-            props.initialStoreConstructorArgs,
-            props.isServer,
-            storeFactories,
-            storeNames
-        ),
-        cleanProps(props)
-    ];
-};
+// export const componentSetup = (
+//     (storeConstructorArgs, storeFactories, storeNames, props) => {
+//         return [
+//             makeStores(
+//                 props.initialStoreConstructorArgs || storeConstructorArgs,
+//                 props.hasOwnProperty('isServer') ? props.isServer : isNode(),
+//                 storeFactories,
+//                 storeNames
+//             ),
+//             cleanProps(props)
+//         ];
+//     }
+// );
+
+// ^ call site is where the non-page/app detection should take place
+
+export const componentSetup = (
+    (storeConstructorArgs, storeFactories, storeNames, props) => {
+        return [
+            makeStores(
+                props.initialStoreConstructorArgs ,
+                props.isServer,
+                storeFactories,
+                storeNames
+            ),
+            cleanProps(props)
+        ];
+    }
+);
 
 export const ctxExtrasSetup = (ctx, initialStoreConstructorArgs, isServer) => {
     let _initialStoreConstructorArgs, _isServer;
