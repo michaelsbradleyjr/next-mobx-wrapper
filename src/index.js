@@ -170,9 +170,11 @@ export default function withMobX(...args) {
         }
         if (extendsApp(Component)) {
             const AppComponent = Component;
-            _Component = function ({Component, pageProps, router}) {
+            _Component = function _Component({Component, pageProps, router}) {
+                // ^ can pass _Component to factory's "make" and StoreHouse
+                // instance's "handle" for use w/ WeakMap mechanism
                 const [stores, _pageProps] = componentSetup(
-                    storeFactories, storeNames, pageProps
+                    storeConstructorArgs, storeFactories, storeNames, pageProps
                 );
                 const appComponentProps = {router};
                 appComponentProps.Component = function (props) {
@@ -204,11 +206,15 @@ export default function withMobX(...args) {
                 );
             };
         } else {
-            _Component = function (props) {
+            _Component = function _Component(props) {
+                // ^ can pass _Component to factory's "make" and StoreHouse
+                // instance's "handle" for use w/ WeakMap mechanism
                 return wrapComponent(
                     Component,
                     storeNames,
-                    ...componentSetup(storeFactories, storeNames, props)
+                    ...componentSetup(
+                        storeConstructorArgs, storeFactories, storeNames, props
+                    )
                 );
             };
 
