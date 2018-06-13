@@ -12,41 +12,63 @@ export * from './store';
 // notes, todo
 /* =============================================================================
 
-(+) formal tests
+(+) strategy change: don't automatically use inject/observer, just wrap page
+    component in Provider and leave it to this lib's user to call
+    inject/observer on a page and/or its children and/or their children in
+    turn, and so on
 
-(+) docs and examples
+(+) strateogy change: use "__withMobX_" prefixed name-variants for isServer
+    and initialStoreConstructorArgs properties
 
-(+) a "with-mobx-wrapper" pull request for zeit/next.js
+(+) strategy change: throw an error if withMobX was called on a non-page/app
+    component; the error will come a bit late, i.e. when a page is in the
+    process of being rendered based on detecting that getInitialProps was not
+    called, i.e. based on missing "__withMobX_" prefixed properties
 
-(+) docs/examples should probably include heads-up re: mutation of store
-    constructor args w/in getInitialStoreConstructorArgs and store constructors
-
-(+) docs/examples should explain that withMobX can be used with non-page/app
-    components but that such usage won't result in stores' constructors' static
-    "getInitialStoreConstructorArgs" methods being invoked, same as how
-    non-page/app components don't support getInitialProps per Next's docs
-
-(+) double-check storeConstructorArgs forwarding so that factory's make
-    gets forwarded args even if getInitialStoreDonstructorArgs isn't called
-
-(+) figure out something with WeakMap and Page/App/Component objects (involving
-    a combination of keys and counters) in relation to store names; need to see
-    how problems crop up w.r.t. hot reload during development-usage (may be
-    an issue during production-usage too)
-
-(+) StoreHouse can be revised (e.g. its "set" and "enforce" methods) so that
-    it's stricter about the relationships between Store constructors and
-    instances and StoreFactory constructors
-
-(+) StoreHouse "enforce" method should be revised so that it subsumes task
-    of checking for existing key, and therefore the next steps after it is
-    called can proceed to setting/using a value based on enforce's return value
+(+) use WeakMap with page/app wrapper objects (name the functions! -- pass to
+    factory's "make" and on to StoreHouse instance's "handle"), involving a
+    combo of keys and counters, to have a mechanism that expunges store-name
+    keys in a StoreHouse; this should address problems that will likely arise
+    from hot reload during development (possibly in production too)... need to
+    experiment and test
 
 (+) revise error messages and warnings using template literals and "dedent";
     see: https://github.com/dmnd/dedent
 
-(+) consider checking in withMobX whether the Component is an instance of next's
-    Document class and throwing an 'unsupported' error
+(+) figure out guidance/usage re: `mobxReact.useStaticRendering(true)` in
+    server environment; it can be called repeatedly w/o bad effect, so perhaps
+    do it in getInitialProps of page/app... any implications for doing that
+    automatically as opposed to users of this lib using a custom next-server
+    approach that calls it only once (or doesn't call it for some reason)
+    during server initialization? perhaps withMobX can support a 1st/2nd
+    argument that could be a boolean and if so would be a flag
+    ("autoDisableStaticRenderingOnServer", default `true`) indicating whether
+    to automatically call useStaticRendering
+
+(+) StoreHouse "handle" method should be revised so that it subsumes task of
+    checking for existing store-name key, and therefore the next steps after it
+    is called can proceed to setting/using a value based on handle's return
+    value; or maybe just have handle do everything including store
+    instatiation/return
+
+(+) StoreHouse can be revised (e.g. its "set" and "handle" methods) so that
+    it's stricter about the relationships between Store constructors and
+    instances and StoreFactory constructors
+
+(+) formal tests
+
+(+) docs and examples
+
+(+) docs/examples should probably include heads-up re: mutation of store
+    constructor args w/in getInitialStoreConstructorArgs and store constructors
+
+(+) docs/examples should explain that withMobX cannot be used with Next's
+    Document nor with non-page/app components
+
+(+) docs should explain implications of "autoDisableStaticRenderingOnServer"
+    withMobX flag
+
+(+) a "with-mobx-wrapper" pull request for zeit/next.js
 
 */
 
