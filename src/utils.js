@@ -193,7 +193,7 @@ export const wrapComponent = (Component, storeNames, stores, props) => {
         Provider,
         stores,
         React.createElement(
-            inject(...storeNames)(observer(Component)),
+            Component,
             props
         )
     );
