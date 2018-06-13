@@ -55,8 +55,12 @@ export * from './store';
     it's stricter about the relationships between Store constructors and
     instances and StoreFactory constructors
 
-(+) revise impl of extendsDocument to avoid use of eval;
-    for alt approaches see: https://arunoda.me/blog/ssr-and-server-only-modules
+(+) revise impl of extendsDocument to avoid use of eval
+    see: https://arunoda.me/blog/ssr-and-server-only-modules
+    maybe can just put the package name ('next/document') into a variable and
+    invoke require via a function that would be called w/ that variable, so
+    that webpack can't analyze it... need to test using the "webpack analyzer"
+    mentioned in the blog post (link above)
 
 (+) formal tests
 
