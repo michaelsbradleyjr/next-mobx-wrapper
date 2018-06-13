@@ -1,4 +1,5 @@
 import {inject, observer, Provider} from 'mobx-react';
+import App from 'next/app';
 import React from 'react';
 
 export const cleanProps = (props) => {
@@ -58,6 +59,31 @@ export const ctxExtrasSetup = (ctx, initialStoreConstructorArgs, isServer) => {
     }
     return {_initialStoreConstructorArgs, _isServer};
 };
+
+export const extendsApp = (Component) => (
+    (Component.prototype instanceof App) || (Component === App)
+);
+
+export const extendsDocument = (
+    // a non-eval approach would probably be better; need to experiment, test:
+    // https://arunoda.me/blog/ssr-and-server-only-modules
+    () => {
+        let Document;
+        try {
+            Document = eval('require("next/document")').default;
+        } catch (e) {
+            Document = 'undefined';
+        }
+        return (
+            Document === 'undefined'
+                ? (Component) => false
+                : (Component) => (
+                    (Component.prototype instanceof Document)
+                        || (Component === Document)
+                )
+        );
+    }
+)();
 
 export const isConstructor = (
     () => {

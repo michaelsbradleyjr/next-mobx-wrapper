@@ -1,7 +1,7 @@
-import App from 'next/app';
-
 import {defaultStoreHouse, StoreFactory, StoreHouse} from './store';
 import {componentSetup,
+        extendsApp,
+        extendsDocument,
         ordinalSuffixOf,
         resolveStoreConstructorArgs,
         wrapAppComponent,
@@ -138,7 +138,13 @@ export default function withMobX(...args) {
     storeNames = [...storeNames];
     return function (Component) {
         let _Component;
-        if (Component instanceof App) {
+        if (extendsDocument(Component)) {
+            throw new TypeError(
+                'Component cannot have Next.js Document in its prototype' +
+                    ' chain nor be identity with Document'
+            );
+        }
+        if (extendsApp(Component)) {
             const AppComponent = Component;
             _Component = function ({Component, pageProps, router}) {
                 const [stores, _pageProps] = componentSetup(
