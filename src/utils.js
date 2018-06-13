@@ -163,9 +163,7 @@ export const resolveStoreConstructorArgs = (
                for (let index = 0; index < len; index++) {
                    const factory = storeFactories[index],
                          name = storeNames[index],
-                         seedArgs = (
-                             [...storeConstructorArgs[index]] || []
-                         );
+                         seedArgs = [...storeConstructorArgs[name]];
                    if (!_initialStoreConstructorArgs[name]) {
                        const Store = factory.Store;
                        if (Store.getInitialStoreConstructorArgs) {
