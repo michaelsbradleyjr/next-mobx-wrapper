@@ -119,14 +119,14 @@ export const isConstructor = (
 // )();
 
 export const makeStores = (
-    (initialStoreConstructorArgs,
+    (storeConstructorArgs,
      isServer,
      storeFactories,
      storeNames) => {
          const stores = {};
          storeNames.forEach((name, index) => {
              stores[name] = storeFactories[index].make(
-                 initialStoreConstructorArgs[name], isServer, name
+                 storeConstructorArgs[name], isServer, name
              );
          });
          return stores;
