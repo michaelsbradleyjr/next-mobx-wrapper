@@ -105,16 +105,16 @@ export const isConstructor = (
 )();
 
 /* global process */
-// export const isNode = (
-//     () => {
-//         const isNode = (
-//             Object.prototype.toString.call(
-//                 typeof process !== 'undefined' ? process : 0
-//             ) === '[object process]'
-//         );
-//         return () => isNode;
-//     }
-// )();
+export const isNode = (
+    () => {
+        const isNode = (
+            Object.prototype.toString.call(
+                typeof process !== 'undefined' ? process : 0
+            ) === '[object process]'
+        );
+        return () => isNode;
+    }
+)();
 
 export const makeStores = (
     (storeConstructorArgs,
