@@ -89,7 +89,7 @@ export default function withMobX(...args) {
     } else {
         defaultStoreFactory = StoreFactory;
     }
-    const storeConstructorArgs = [],
+    const storeConstructorArgs = {},
           storeFactories = [];
     let storeNames = new Set();
     while (args.length) {
@@ -153,7 +153,9 @@ export default function withMobX(...args) {
             count += 1;
             constructorArgs = args.shift();
         }
-        storeConstructorArgs.push(constructorArgs);
+        storeConstructorArgs[name] = constructorArgs
+            ? [...constructorArgs]
+            : [];
         storeFactories.push(factory);
         storeNames.add(name);
     }
