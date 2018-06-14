@@ -11,7 +11,7 @@
     ],
     "main": "lib/index.js",
     "scripts": {
-        "babel": "babel --ignore spec.js,test.js --out-dir lib src",
+        "babel": "babel --ignore 'src/*.spec.js' --out-dir lib src",
         "build": "npm run clean && npm run babel",
         "clean": "rimraf lib",
         "next": "next",
