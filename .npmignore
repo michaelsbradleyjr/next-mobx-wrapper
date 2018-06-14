@@ -1,7 +1,13 @@
 .babelrc
 .next
 .travis.yml
+
+components
 coverage
+out
 pages
+src/*.spec.js
+tests
+
 jest.config.js
 jest-puppeteer.config.js
