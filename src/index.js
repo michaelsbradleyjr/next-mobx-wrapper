@@ -12,6 +12,12 @@ export * from './store';
 // notes, todo
 /* =============================================================================
 
+(+) clean up package.json "scripts" -- some may not be necessary; clarify
+    whether it's really necessary to build w/ babel to import withMobX from
+    pages/ scripts, i.e. next-redux-wrapper imports from '../lib' but maybe can
+    import from '../src'; if can import from '../scr' then revise "start" (and
+    may not need "watch")
+
 (+) strategy change: don't automatically use inject/observer, just wrap page
     component in Provider and leave it to this lib's user to call
     inject/observer on a page and/or its children and/or their children in
@@ -43,7 +49,9 @@ export * from './store';
     during server initialization? perhaps withMobX can support a 1st/2nd
     argument that could be a boolean and if so would be a flag
     ("autoDisableStaticRenderingOnServer", default `true`) indicating whether
-    to automatically call useStaticRendering
+    to automatically call useStaticRendering... would be better to use an
+    options argument for both this flag and a non-default StoreFactory
+    constructor; so 1st arg would either be options object or a string
 
 (+) StoreHouse "handle" method should be revised so that it subsumes task of
     checking for existing store-name key, and therefore the next steps after it
