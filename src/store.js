@@ -112,11 +112,11 @@ export class StoreHouse extends Map {
 export const defaultStoreHouse = new StoreHouse();
 
 /* Store impls can have an async static method named
-   'getInitialStoreConstructorArgs'
+   'getInitialConstructorArgs'
    ================================================= */
 // Example:
 class Store {
-    static async getInitialStoreConstructorArgs(
+    static async getInitialConstructorArgs(
         {isServer, seedArgs, ctx}
     ) {
         return seedArgs;

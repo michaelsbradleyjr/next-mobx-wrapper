@@ -67,7 +67,7 @@ export * from './store';
 (+) docs and examples
 
 (+) docs/examples should probably include heads-up re: mutation of store
-    constructor args w/in getInitialStoreConstructorArgs and store constructors
+    constructor args w/in getInitialConstructorArgs and store constructors
 
 (+) docs/examples should explain that withMobX cannot be used with Next's
     Document nor with non-page/app components

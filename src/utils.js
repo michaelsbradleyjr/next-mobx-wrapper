@@ -170,9 +170,9 @@ export const resolveStoreConstructorArgs = (
                          seedArgs = [...storeConstructorArgs[name]];
                    if (!_initialStoreConstructorArgs[name]) {
                        const Store = factory.Store;
-                       if (Store.getInitialStoreConstructorArgs) {
+                       if (Store.getInitialConstructorArgs) {
                            _initialStoreConstructorArgs[name] = [...(
-                               await Store.getInitialStoreConstructorArgs(
+                               await Store.getInitialConstructorArgs(
                                    {_isServer, seedArgs, ctx}
                                )
                            )];
