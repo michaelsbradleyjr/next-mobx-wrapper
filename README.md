@@ -1,5 +1,5 @@
-MobX wrapper for Next.js
-========================
+[MobX][mobx-react] wrapper for [Next.js][next]
+==============================================
 
 [![Build status](
     https://travis-ci.org/michaelsbradleyjr/next-mobx-wrapper.svg?branch=master
@@ -24,3 +24,6 @@ This project's structure and package setup were inspired by
 [next-redux-wrapper](
     https://github.com/kirill-konshin/next-redux-wrapper
 ).
+
+[mobx-react]: https://github.com/mobxjs/mobx-react
+[next]: https://github.com/zeit/next.js
