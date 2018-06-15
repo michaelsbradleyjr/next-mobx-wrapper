@@ -145,7 +145,7 @@ export default function withMobX(...args) {
         let factory = args.shift();
         if (!(factory instanceof StoreFactory)) {
             try {
-                factory = defaultStoreFactory(factory);
+                factory = new defaultStoreFactory(factory);
             } catch (e) {
                 console.error(e);
             }
