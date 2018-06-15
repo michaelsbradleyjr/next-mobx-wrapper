@@ -30,11 +30,11 @@ export const cleanProps = (props) => {
 // ^ call site is where the non-page/app detection should take place
 
 export const componentSetup = (
-    (storeConstructorArgs, storeFactories, storeNames, props) => {
+    (isServer, storeFactories, storeNames, props) => {
         return [
             makeStores(
-                props.initialStoreConstructorArgs ,
-                props.isServer,
+                isServer,
+                props.initialStoreConstructorArgs,
                 storeFactories,
                 storeNames
             ),
@@ -43,8 +43,8 @@ export const componentSetup = (
     }
 );
 
-export const ctxExtrasSetup = (ctx, initialStoreConstructorArgs, isServer) => {
-    let _initialStoreConstructorArgs, _isServer;
+export const ctxExtrasSetup = (initialStoreConstructorArgs) => {
+    let _initialStoreConstructorArgs;
     if (typeof initialStoreConstructorArgs === 'undefined') {
         _initialStoreConstructorArgs = {};
     } else {
@@ -52,12 +52,7 @@ export const ctxExtrasSetup = (ctx, initialStoreConstructorArgs, isServer) => {
             {...initialStoreConstructorArgs}
         );
     }
-    if (typeof isServer === 'undefined') {
-        _isServer = !!ctx.req;
-    } else {
-        _isServer = !!isServer;
-    }
-    return {_initialStoreConstructorArgs, _isServer};
+    return {_initialStoreConstructorArgs};
 };
 
 export const extendsApp = (Component) => (
@@ -123,8 +118,8 @@ export const isNode = (
 )();
 
 export const makeStores = (
-    (storeConstructorArgs,
-     isServer,
+    (isServer,
+     storeConstructorArgs,
      storeFactories,
      storeNames) => {
          const stores = {};
@@ -160,8 +155,8 @@ export const resolveStoreConstructorArgs = (
            storeConstructorArgs,
            storeFactories,
            storeNames) => {
-               const {_initialStoreConstructorArgs, _isServer} = (
-                   ctxExtrasSetup(ctx, initialStoreConstructorArgs, isServer)
+               const {_initialStoreConstructorArgs} = (
+                   ctxExtrasSetup(initialStoreConstructorArgs)
                );
                const len = storeNames.length;
                for (let index = 0; index < len; index++) {
@@ -173,7 +168,7 @@ export const resolveStoreConstructorArgs = (
                        if (Store.getInitialConstructorArgs) {
                            _initialStoreConstructorArgs[name] = [...(
                                await Store.getInitialConstructorArgs(
-                                   {_isServer, seedArgs, ctx}
+                                   {isServer, seedArgs, ctx}
                                )
                            )];
                        } else {
@@ -181,7 +176,9 @@ export const resolveStoreConstructorArgs = (
                        }
                    }
                }
-               return {_initialStoreConstructorArgs, _isServer};
+               return {
+                   initialStoreConstructorArgs: _initialStoreConstructorArgs
+               };
            }
 );
 

@@ -188,8 +188,9 @@ export default function withMobX(...args) {
             _Component = function _Component({Component, pageProps, router}) {
                 // ^ can pass _Component to factory's "make" and StoreHouse
                 // instance's "handle" for use w/ WeakMap mechanism
+                const isServer = !!_Component.isServer;
                 const [stores, _pageProps] = componentSetup(
-                    storeConstructorArgs, storeFactories, storeNames, pageProps
+                    isServer, storeFactories, storeNames, pageProps
                 );
                 const appComponentProps = {router};
                 appComponentProps.Component = function (props) {
@@ -202,8 +203,10 @@ export default function withMobX(...args) {
             };
 
             _Component.getInitialProps = async function (
-                {Component, ctx, initialStoreConstructorArgs, isServer, router}
+                {Component, ctx, initialStoreConstructorArgs, router}
             ) {
+                const isServer = !!ctx.req;
+                _Component.isServer = isServer;
                 const pageProps = await resolveStoreConstructorArgs(
                     ctx,
                     initialStoreConstructorArgs,
@@ -224,18 +227,21 @@ export default function withMobX(...args) {
             _Component = function _Component(props) {
                 // ^ can pass _Component to factory's "make" and StoreHouse
                 // instance's "handle" for use w/ WeakMap mechanism
+                const isServer = !!_Component.isServer;
                 return wrapComponent(
                     Component,
                     storeNames,
                     ...componentSetup(
-                        storeConstructorArgs, storeFactories, storeNames, props
+                        isServer, storeFactories, storeNames, props
                     )
                 );
             };
 
             _Component.getInitialProps = async function (
-                {initialStoreConstructorArgs, isServer, ...ctx}
+                {initialStoreConstructorArgs, ...ctx}
             ) {
+                const isServer = !!ctx.req;
+                _Component.isServer = isServer;
                 const props = await resolveStoreConstructorArgs(
                     ctx,
                     initialStoreConstructorArgs,
