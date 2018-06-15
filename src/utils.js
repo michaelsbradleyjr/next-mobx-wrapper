@@ -4,7 +4,7 @@ import React from 'react';
 
 export const cleanProps = (props) => {
     const _props = {};
-    Object.keys(_props).foreEach((key) => {
+    Object.keys(props).forEach((key) => {
         if (!['initialStoreConstructorArgs',
               'isServer'].includes(key)) {
             _props[key] = props[key];
