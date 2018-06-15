@@ -160,8 +160,8 @@ export default function withMobX(...args) {
         }
         let constructorArgs;
         if (!args.length
-            || !args[count][Symbol.iterator]
-            || typeof args[count] === 'string'
+            || !args[0][Symbol.iterator]
+            || typeof args[0] === 'string'
            ) {
             constructorArgs = null;
         } else {
