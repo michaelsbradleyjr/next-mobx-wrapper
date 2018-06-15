@@ -71,6 +71,7 @@ export const isNode = (
     }
 )();
 
+/* global global */
 export const extendsDocument = (
     () => {
         let Document;
@@ -80,7 +81,7 @@ export const extendsDocument = (
                 // ^ prefer not to use eval... test solution below with
                 // webpack-bundle-anaylyzer
                 const p = 'next/document',
-                      u = (m) => require(m);
+                      u = (m) => global['require'](m);
                 Document = u(p).default;
             } catch (e) {}
         }
