@@ -59,7 +59,18 @@ export const extendsApp = (Component) => (
     (Component.prototype instanceof App) || (Component === App)
 );
 
-/* global require */
+/* global process */
+export const isNode = (
+    () => {
+        const isNode = (
+            Object.prototype.toString.call(
+                typeof process !== 'undefined' ? process : 0
+            ) === '[object process]'
+        );
+        return () => isNode;
+    }
+)();
+
 export const extendsDocument = (
     () => {
         let Document;
@@ -102,18 +113,6 @@ export const isConstructor = (
                 }
             };
         }
-    }
-)();
-
-/* global process */
-export const isNode = (
-    () => {
-        const isNode = (
-            Object.prototype.toString.call(
-                typeof process !== 'undefined' ? process : 0
-            ) === '[object process]'
-        );
-        return () => isNode;
     }
 )();
 
