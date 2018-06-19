@@ -1,9 +1,5 @@
 import {isConstructor} from './utils';
 
-export const defaultStoreFactoryOptions = Object.freeze({
-    stores: defaultStoreHouse
-});
-
 export class StoreFactory {
     constructor(Store, options = defaultStoreFactoryOptions) {
         const _options = {...defaultStoreFactoryOptions, ...options},
@@ -122,6 +118,10 @@ export class StoreHouse extends Map {
 }
 
 export const defaultStoreHouse = new StoreHouse();
+
+export const defaultStoreFactoryOptions = Object.freeze({
+    stores: defaultStoreHouse
+});
 
 /* Store impls can have an async static method named
    'getInitialConstructorArgs'
