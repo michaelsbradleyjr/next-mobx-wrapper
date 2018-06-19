@@ -14,18 +14,19 @@ export const cleanProps = ({props}) => {
     return _props;
 };
 
-export const getInitialProps = async (...args) => {
-    const [_args, Component, config, ctx, Wrapper] = args;
-    const {isServer, props} = await setupIsServerAndProps(
-        Wrapper, config, ctx
-    );
-    return (
-        Component.getInitialProps
-            ? {...(await Component.getInitialProps(..._args)),
-               ...props}
-        : props
-    );
-};
+export const getInitialProps = (
+    async (args, Component, config, ctx, Wrapper) => {
+        const {isServer, props} = await setupIsServerAndProps(
+            Wrapper, config, ctx
+        );
+        return (
+            Component.getInitialProps
+                ? {...(await Component.getInitialProps(...args)),
+                   ...props}
+            : props
+        );
+    }
+);
 
 export const isServer = Symbol('isServer');
 
