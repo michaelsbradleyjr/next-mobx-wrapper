@@ -23,7 +23,7 @@ export default withMobX('my_store', store)(
                 <div>
                   {/*<Page title='Index Page' linkTo='/other' />*/}
                   <Page title='Index Page' />
-                  <p>Raw clocks: &nbsp;
+                  <p>Raw clock: &nbsp;
                     {this.props.my_store.lastUpdate}&ensp;
                   </p>
                 </div>
