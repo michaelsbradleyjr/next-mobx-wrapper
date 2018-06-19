@@ -222,7 +222,13 @@ export const resolveStoreConstructorArgs = async (config) => {
 };
 
 export const setupAppOrPage = (Component, componentProps) => {
-    if (!Component.hasOwnProperty(isServer)) {
+    let _isServer;
+    if (Component.hasOwnProperty(isServer)) {
+        _isServer = Component[isServer];
+    } else if (componentProps.hasOwnProperty(
+        '__withMobX_isServer')) {
+        _isServer = componentProps.__withMobX_isServer;
+    } else {
         throw new TypeError(
             'Wrapped component was not invoked as a Next.js App or Page'
         );
@@ -231,7 +237,7 @@ export const setupAppOrPage = (Component, componentProps) => {
         initialStoreConstructorArgs:
         componentProps.__withMobX_initialStoreConstructorArgs,
         isServer:
-        Component[isServer]
+        _isServer
     };
 };
 
