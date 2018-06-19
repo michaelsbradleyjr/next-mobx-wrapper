@@ -1,11 +1,5 @@
-import {defaultStoreHouse, StoreFactory, StoreHouse} from './store';
-import {componentSetup,
-        extendsApp,
-        extendsDocument,
-        ordinalSuffixOf,
-        resolveStoreConstructorArgs,
-        wrapAppComponent,
-        wrapComponent} from './utils';
+import {makeWrapper, setupConfig, setupOptions} from './helpers';
+import {StoreFactory} from './store';
 
 export * from './store';
 
