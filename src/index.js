@@ -56,177 +56,21 @@ export * from './store';
 
 */
 
-export default function withMobX(...args) {
-    if (args.length < 2) {
-        throw new TypeError('expects at least 2 arguments');
-    }
-    const args0 = args[0];
-    let count = 0,
-        defaultStoreFactory;
-    if (args0
-        && (typeof args0 === 'function')
-        && ((args0.prototype instanceof StoreFactory)
-            || (args0 === StoreFactory))) {
-        defaultStoreFactory = args0;
-        count += 1;
-        args.shift();
-    } else {
-        defaultStoreFactory = StoreFactory;
-    }
-    const storeConstructorArgs = {},
-          storeFactories = [];
-    let storeNames = new Set();
-    while (args.length) {
-        count += 1;
-        const name = args.shift();
-        if (typeof name !== 'string') {
-            if (count === 1) {
-                throw new TypeError(
-                    '1st argument must be a string or a' +
-                        ' constructor that has StoreFactory in its prototype' +
-                        ' chain (or is identity with StoreFactory)'
-                );
-            } else {
-                throw new TypeError(
-                    ordinalSuffixOf(count) +
-                        ' argument must be a string when ' +
-                        ordinalSuffixOf(count - 1) +
-                        ' argument is an instance of (or valid constructor' +
-                        ' argument for) the default StoreFactory or is a' +
-                        ' non-string iterable or is a constructor that has' +
-                        ' StoreFactory in its prototype chain (or is identity' +
-                        ' with StoreFactory)'
-                );
-            }
-        }
-        if (storeNames.has(name)) {
-            throw new Error(
-                'duplicate store name "' + name + '" within current invocation'
-            );
-        }
-        count += 1;
-        if (!args.length) {
-            throw new TypeError(
-                'expects ' + count + ' arguments when ' +
-                    ordinalSuffixOf(count - 1) + ' argument is a string'
-            );
-        }
-        let factory = args.shift();
-        if (!(factory instanceof StoreFactory)) {
-            try {
-                factory = new defaultStoreFactory(factory);
-            } catch (e) {
-                console.error(e);
-            }
-        }
-        if (!(factory instanceof StoreFactory)) {
-            throw new TypeError(
-                ordinalSuffixOf(count) +
-                    ' argument must be an instance of (or valid constructor' +
-                    ' argument for) the default StoreFactory when' +
-                    ordinalSuffixOf(count - 1) + ' argument is a string'
-            );
-        }
-        let constructorArgs;
-        if (!args.length
-            || !args[0][Symbol.iterator]
-            || typeof args[0] === 'string'
-           ) {
-            constructorArgs = null;
-        } else {
-            count += 1;
-            constructorArgs = args.shift();
-        }
-        storeConstructorArgs[name] = constructorArgs
-            ? [...constructorArgs]
-            : [];
-        storeFactories.push(factory);
-        storeNames.add(name);
-    }
-    storeNames = [...storeNames];
-    return function (Component) {
-        let _Component;
-        if (extendsDocument(Component)) {
-            throw new TypeError(
-                'Component cannot have Next.js Document in its prototype' +
-                    ' chain nor be identity with Document'
-            );
-        }
-        if (extendsApp(Component)) {
-            const AppComponent = Component;
-            _Component = function _Component({Component, pageProps, router}) {
-                // ^ can pass _Component to factory's "make" and StoreHouse
-                // instance's "handle" for use w/ WeakMap mechanism
-                const isServer = !!_Component.isServer;
-                const [stores, _pageProps] = componentSetup(
-                    isServer, storeFactories, storeNames, pageProps
-                );
-                const appComponentProps = {router};
-                appComponentProps.Component = function (props) {
-                    return wrapComponent(
-                        Component, storeNames, stores, props
-                    );
-                };
-                appComponentProps.pageProps = _pageProps;
-                return wrapAppComponent(AppComponent, appComponentProps);
-            };
+export const defaultOptions = Object.freeze({
+    autoEnableStaticRenderingOnServer: true,
+    defaultStoreFactory: StoreFactory
+});
 
-            _Component.getInitialProps = async function (
-                {Component, ctx, initialStoreConstructorArgs, router}
-            ) {
-                const isServer = !!ctx.req;
-                _Component.isServer = isServer;
-                const pageProps = await resolveStoreConstructorArgs(
-                    ctx,
-                    initialStoreConstructorArgs,
-                    isServer,
-                    storeConstructorArgs,
-                    storeFactories,
-                    storeNames
-                );
-                return (
-                    AppComponent.getInitialProps
-                        ? {...(await AppComponent.getInitialProps(
-                            Component, ctx, router)),
-                           ...pageProps}
-                    : pageProps
-                );
-            };
-        } else {
-            _Component = function _Component(props) {
-                // ^ can pass _Component to factory's "make" and StoreHouse
-                // instance's "handle" for use w/ WeakMap mechanism
-                const isServer = !!_Component.isServer;
-                return wrapComponent(
-                    Component,
-                    storeNames,
-                    ...componentSetup(
-                        isServer, storeFactories, storeNames, props
-                    )
-                );
-            };
+export const makeWithMobX = (options = defaultOptions) => (
+    (...args) => {
+        const _options = setupOptions(defaultOptions, options),
+              config = setupConfig(args, _options);
+        return (Component) => (
+            makeWrapper(Component, {...config, options: _options})
+        );
+    }
+);
 
-            _Component.getInitialProps = async function (
-                {initialStoreConstructorArgs, ...ctx}
-            ) {
-                const isServer = !!ctx.req;
-                _Component.isServer = isServer;
-                const props = await resolveStoreConstructorArgs(
-                    ctx,
-                    initialStoreConstructorArgs,
-                    isServer,
-                    storeConstructorArgs,
-                    storeFactories,
-                    storeNames
-                );
-                return (
-                    Component.getInitialProps
-                        ? {...(await Component.getInitialProps(ctx)),
-                           ...props}
-                    : props
-                );
-            };
-        }
-        return _Component;
-    };
-};
+export const defaultWithMobX = makeWithMobX();
+
+export default defaultWithMobX;
