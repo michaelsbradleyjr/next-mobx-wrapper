@@ -1,8 +1,14 @@
 import {isConstructor} from './utils';
 
+export const defaultStoreFactoryOptions = Object.freeze({
+    stores: defaultStoreHouse
+});
+
 export class StoreFactory {
-    constructor(Store, {stores = defaultStoreHouse} = {}) {
-        const len = arguments.length;
+    constructor(Store, options = defaultStoreFactoryOptions) {
+        const _options = {...defaultStoreFactoryOptions, ...options},
+              {stores} = _options,
+              len = arguments.length;
         if (!len) {
             throw new TypeError('expects at least 1 argument');
         }
@@ -54,11 +60,17 @@ export class StoreFactory {
     }
 }
 
+export const defaultStoreHouseOptions = Object.freeze({
+    singletons: true,
+    warnOnSingletons: true
+});
+
 export class StoreHouse extends Map {
-    constructor(iterable, {singletons = true,
-                           warnOnSingletons = true} = {}) {
+    constructor(iterable, options = defaultStoreHouseOptions) {
         super(iterable);
-        const len = arguments.length;
+        const _options = {...defaultStoreHouseOptions, ...options},
+              {singletons, warnOnSingletons} = _options,
+              len = arguments.length;
         if (len > 2) {
             throw new TypeError('expects no more than 2 arguments');
         }
