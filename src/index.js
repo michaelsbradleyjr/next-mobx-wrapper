@@ -12,12 +12,22 @@ export * from './store';
     import from '../src'; if can import from '../scr' then revise "start" (and
     may not need "watch")
 
-(+) use WeakMap with page/app wrapper objects (name the functions! -- pass to
-    factory's "make" and on to StoreHouse instance's "handle"), involving a
-    combo of keys and counters, to have a mechanism that expunges store-name
-    keys in a StoreHouse; this should address problems that will likely arise
-    from hot reload during development (possibly in production too)... need to
-    experiment and test
+(+) use WeakMap with page/app wrappers (pass wrapper to factory's "make" and on
+    to StoreHouse instance's "handle"), involving a combo of keys and counters,
+    to have a mechanism that expunges store-name keys in a StoreHouse; this
+    should address problems that will likely arise from hot reload during
+    development (possibly in production too)... need to experiment and
+    test... it seems WeakRefs is really what's needed, WeakMap just doesn't
+    offer the needed functionality
+
+(+) ^ !!! may need a different approach; could label pages server-side with a
+    hash derived from the file path (should be unique for each <page>.js and
+    _app.js) and pair that w/ __withMobX_pageId on initial props; if the same
+    page/app (i.e. same id) is a different object then decrement a store-key
+    counter, or something like that; if counter hits zero then remove the
+    store-key (the name of the store given to withMobX)... may run into some
+    old-page pre/fetch logic issues w.r.t. other pages/app using same key name
+    that have also changed though browser isn't navigated to them at that time
 
 (+) revise error messages and warnings using template literals and "dedent";
     see: https://github.com/dmnd/dedent
