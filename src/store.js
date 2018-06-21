@@ -2,9 +2,7 @@ import {isConstructor, reformat} from './utils';
 
 export class StoreFactory {
     constructor(Store, options = defaultStoreFactoryOptions) {
-        const _options = {...defaultStoreFactoryOptions, ...options},
-              {stores} = _options,
-              len = arguments.length;
+        const len = arguments.length;
         if (!len) {
             throw new TypeError(`expects at least 1 argument`);
         }
@@ -18,6 +16,11 @@ export class StoreFactory {
                 operator
             `));
         }
+        if (typeof options !== 'object') {
+            throw new TypeError(`2nd argument must be an object`);
+        }
+        const _options = {...defaultStoreFactoryOptions, ...options},
+              {stores} = _options;
         if (!(stores instanceof StoreHouse)) {
             throw new TypeError(
                 `"stores" option must be an instance of StoreHouse`
@@ -31,14 +34,14 @@ export class StoreFactory {
         if (len !== 3) {
             throw new TypeError(`expects exactly 3 arguments`);
         }
+        if (!constructorArgs[Symbol.iterator]) {
+            throw new TypeError(`1st argument must be iterable`);
+        }
         if (typeof isServer !== 'boolean') {
-            throw new TypeError(`1st argument must be a boolean`);
+            throw new TypeError(`2nd argument must be a boolean`);
         }
         if (typeof name !== 'string') {
-            throw new TypeError(`2nd argument must be a string`);
-        }
-        if (!constructorArgs[Symbol.iterator]) {
-            throw new TypeError(`3rd argument must be iterable`);
+            throw new TypeError(`3rd argument must be a string`);
         }
         const {Store, stores} = this;
         let _store;
@@ -64,12 +67,15 @@ export const defaultStoreHouseOptions = Object.freeze({
 export class StoreHouse extends Map {
     constructor(iterable, options = defaultStoreHouseOptions) {
         super(iterable);
-        const _options = {...defaultStoreHouseOptions, ...options},
-              {singletons, warnOnSingletons} = _options,
-              len = arguments.length;
+        const len = arguments.length;
         if (len > 2) {
             throw new TypeError(`expects no more than 2 arguments`);
         }
+        if (typeof options !== 'object') {
+            throw new TypeError(`2nd argument must be an object`);
+        }
+        const _options = {...defaultStoreHouseOptions, ...options},
+              {singletons, warnOnSingletons} = _options;
         if (typeof singletons !== 'boolean') {
             throw new TypeError(`"singletons" option must be a boolean`);
         }
