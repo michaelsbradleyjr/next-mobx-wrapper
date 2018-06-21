@@ -1,16 +1,6 @@
 import {inject, observer, Provider, useStaticRendering} from 'mobx-react';
 import React from 'react';
 import {StoreFactory} from './store';
-export const cleanProps = ({props}) => {
-    const _props = {};
-    Object.keys(props).forEach((key) => {
-        if (!['__withMobX_initialStoreConstructorArgs',
-              '__withMobX_isServer'].includes(key)) {
-            _props[key] = props[key];
-        }
-    });
-    return _props;
-};
 import {extendsApp, ordinalSuffixOf, reformat} from './utils';
 
 export const getInitialProps = (
@@ -18,12 +8,12 @@ export const getInitialProps = (
         const {isServer, props} = await setupIsServerAndProps(
             Wrapper, config, ctx
         );
-        return (
+        props.props = (
             Component.getInitialProps
-                ? {...(await Component.getInitialProps(...args)),
-                   ...props}
-            : props
+                ? {...(await Component.getInitialProps(...args))}
+            : {}
         );
+        return props;
     }
 );
 
@@ -297,10 +287,12 @@ export const setupOptions = (defaultOptions, options) => {
 
 export const setupPropsAndStores = (config) => {
     return [
-        cleanProps(config),
+        unwrapProps(config),
         makeStores(config),
     ];
 };
+
+export const unwrapProps = ({props}) => props.props;
 
 export const wrapAppComponent = (Component, props) => {
     return React.createElement(
