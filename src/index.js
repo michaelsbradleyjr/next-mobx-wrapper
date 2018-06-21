@@ -69,7 +69,7 @@ export const makeWithMobX = (...args) => {
         return (Component) => (
             makeWrapper(Component, {...config, options: _options})
         );
-    }
+    };
 };
 
 export const defaultWithMobX = makeWithMobX();
