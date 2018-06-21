@@ -1,8 +1,6 @@
 import {inject, observer, Provider, useStaticRendering} from 'mobx-react';
 import React from 'react';
 import {StoreFactory} from './store';
-import {extendsApp, extendsDocument, ordinalSuffixOf, reformat} from './utils';
-
 export const cleanProps = ({props}) => {
     const _props = {};
     Object.keys(props).forEach((key) => {
@@ -13,6 +11,7 @@ export const cleanProps = ({props}) => {
     });
     return _props;
 };
+import {extendsApp, ordinalSuffixOf, reformat} from './utils';
 
 export const getInitialProps = (
     async (args, Component, config, ctx, Wrapper) => {
@@ -49,15 +48,22 @@ export const makeAppComponent = (AppComponent, config) => {
         return wrapAppComponent(AppComponent, appProps);
     };
 
-    _AppComponent.getInitialProps = async ({Component, ctx, router}) => {
-        return await getInitialProps(
-            [Component, ctx, router],
-            AppComponent,
-            config,
-            ctx,
-            _AppComponent
-        );
-    };
+    _AppComponent.getInitialProps = (
+        async ({Component, ctx, renderPage, router}) => {
+            if (typeof renderPage !== 'undefined') {
+                throw new TypeError(
+                    `Wrapped component was invoked as a Next.js Document`
+                );
+            }
+            return await getInitialProps(
+                [Component, ctx, router],
+                AppComponent,
+                config,
+                ctx,
+                _AppComponent
+            );
+        }
+    );
 
     return _AppComponent;
 };
@@ -103,12 +109,6 @@ export const makeStores = (config) => {
 };
 
 export const makeWrapper = (Component, config) => {
-    if (extendsDocument(Component)) {
-        throw new TypeError(reformat(`
-            Component cannot have Next.js Document in its prototype chain nor
-            be identity with Document
-        `));
-    }
     let make;
     if (extendsApp(Component)) {
         make = makeAppComponent;

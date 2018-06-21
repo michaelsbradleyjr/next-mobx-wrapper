@@ -17,26 +17,6 @@ export const extendsApp = (Component) => (
     (Component.prototype instanceof App) || (Component === App)
 );
 
-/* global require */
-export const extendsDocument = (
-    () => {
-        let Document;
-        if (isNode()) {
-            try {
-                Document = require('next/document').default;
-            } catch (e) {}
-        }
-        return (
-            typeof Document === 'undefined'
-                ? (Component) => false
-                : (Component) => (
-                    (Component.prototype instanceof Document)
-                        || (Component === Document)
-                )
-        );
-    }
-)();
-
 export const isConstructor = (
     () => {
         if (typeof Proxy === 'undefined') {
