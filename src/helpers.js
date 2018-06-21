@@ -114,14 +114,14 @@ export const parseConstructorArgs = (args, counter) => {
        ) {
         constructorArgs = null;
     } else {
-        counter.count += 1;
+        counter.count++;
         constructorArgs = args.shift();
     }
     return constructorArgs;
 };
 
 export const parseFactory = (args, counter, options) => {
-    counter.count += 1;
+    counter.count++;
     if (!args.length) {
         throw new TypeError(reformat(`
             withMobX expects ${counter.count} arguments when its
@@ -148,7 +148,7 @@ export const parseFactory = (args, counter, options) => {
 };
 
 export const parseName = (args, counter, storeNames) => {
-    counter.count += 1;
+    counter.count++;
     const name = args.shift();
     if (typeof name !== 'string') {
         if (counter.count === 1) {
