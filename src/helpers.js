@@ -244,16 +244,16 @@ export const setupConfig = (args, options) => {
 };
 
 export const setupIsServerAndProps = async (Component, config, ctx) => {
-    const _isServer = !!ctx.req;
-    if (_isServer && config.options.autoEnableStaticRenderingOnServer) {
+    const isServer = !!ctx.req;
+    if (isServer && config.options.autoEnableStaticRenderingOnServer) {
         useStaticRendering(true);
     }
     const wrapperProps = await resolveStoreConstructorArgs(
         {...config,
          ctx,
-         isServer: _isServer},
+         isServer},
     );
-    return {isServer: _isServer, wrapperProps};
+    return {isServer, wrapperProps};
 };
 
 export const setupOptions = (defaultOptions, options) => {
