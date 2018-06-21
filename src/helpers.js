@@ -1,7 +1,7 @@
 import {inject, observer, Provider, useStaticRendering} from 'mobx-react';
 import React from 'react';
 import {StoreFactory} from './store';
-import {extendsApp, extendsDocument, ordinalSuffixOf} from './utils';
+import {extendsApp, extendsDocument, ordinalSuffixOf, reformat} from './utils';
 
 export const cleanProps = ({props}) => {
     const _props = {};
@@ -104,10 +104,10 @@ export const makeStores = (config) => {
 
 export const makeWrapper = (Component, config) => {
     if (extendsDocument(Component)) {
-        throw new TypeError(
-            'Component cannot have Next.js Document in its prototype chain' +
-                ' nor be identity with Document'
-        );
+        throw new TypeError(reformat(`
+            Component cannot have Next.js Document in its prototype chain nor
+            be identity with Document
+        `));
     }
     let make;
     if (extendsApp(Component)) {
@@ -116,60 +116,6 @@ export const makeWrapper = (Component, config) => {
         make = makePageComponent;
     }
     return make(Component, config);
-};
-
-export const parseName = (args, counter, storeNames) => {
-    counter.count += 1;
-    const name = args.shift();
-    if (typeof name !== 'string') {
-        if (counter.count === 1) {
-            throw new TypeError('1st argument of withMobX must be a string');
-        } else {
-            throw new TypeError(
-                ordinalSuffixOf(counter.count) +
-                    ' argument of withMobX must be a string when its ' +
-                    ordinalSuffixOf(counter.count - 1) +
-                    ' argument is an instance of (or valid constructor' +
-                    ' argument for) the default StoreFactory or is a' +
-                    ' non-string iterable'
-            );
-        }
-    }
-    if (storeNames.has(name)) {
-        throw new Error(
-            'duplicate store name "' + name + '" within current invocation' +
-                ' of withMobX'
-        );
-    }
-    return name;
-};
-
-export const parseFactory = (args, counter, options) => {
-    counter.count += 1;
-    if (!args.length) {
-        throw new TypeError(
-            'withMobX expects ' + counter.count + ' arguments when its ' +
-                ordinalSuffixOf(counter.count - 1) + ' argument is a string'
-        );
-    }
-    let factory = args.shift();
-    if (!(factory instanceof StoreFactory)) {
-        try {
-            factory = new options.defaultStoreFactory(factory);
-        } catch (e) {
-            console.error(e);
-        }
-    }
-    if (!(factory instanceof StoreFactory)) {
-        throw new TypeError(
-            ordinalSuffixOf(counter.count) +
-                ' argument of withMobX must be an instance of (or valid' +
-                ' constructor argument for) the default StoreFactory when' +
-                ' its ' + ordinalSuffixOf(counter.count - 1) + ' argument is' +
-                ' a string'
-        );
-    }
-    return factory;
 };
 
 export const parseConstructorArgs = (args, counter) => {
@@ -184,6 +130,57 @@ export const parseConstructorArgs = (args, counter) => {
         constructorArgs = args.shift();
     }
     return constructorArgs;
+};
+
+export const parseFactory = (args, counter, options) => {
+    counter.count += 1;
+    if (!args.length) {
+        throw new TypeError(reformat(`
+            withMobX expects ${counter.count} arguments when its
+            ${ordinalSuffixOf(counter.count - 1)} argument is a string
+        `));
+    }
+    let factory = args.shift();
+    if (!(factory instanceof StoreFactory)) {
+        try {
+            factory = new options.defaultStoreFactory(factory);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+    if (!(factory instanceof StoreFactory)) {
+        throw new TypeError(reformat(`
+            ${ordinalSuffixOf(counter.count)} argument of withMobX must be an
+            instance of (or valid constructor argument for) the default
+            StoreFactory when its ${ordinalSuffixOf(counter.count - 1)}
+            argument is a string
+        `));
+    }
+    return factory;
+};
+
+export const parseName = (args, counter, storeNames) => {
+    counter.count += 1;
+    const name = args.shift();
+    if (typeof name !== 'string') {
+        if (counter.count === 1) {
+            throw new TypeError(`1st argument of withMobX must be a string`);
+        } else {
+            throw new TypeError(reformat(`
+                ${ordinalSuffixOf(counter.count)} argument of withMobX must be
+                a string when its ${ordinalSuffixOf(counter.count - 1)}
+                argument is an instance of (or valid constructor argument for)
+                the default StoreFactory or is a non-string iterable
+            `));
+        }
+    }
+    if (storeNames.has(name)) {
+        throw new Error(reformat(`
+            duplicate store name "${name}" within current invocation of
+            withMobX
+        `));
+    }
+    return name;
 };
 
 export const resolveStoreConstructorArgs = async (config) => {
@@ -226,7 +223,7 @@ export const setupAppOrPage = (Component, componentProps) => {
         _isServer = componentProps.__withMobX_isServer;
     } else {
         throw new TypeError(
-            'Wrapped component was not invoked as a Next.js App or Page'
+            `Wrapped component was not invoked as a Next.js App or Page`
         );
     }
     return {
@@ -239,7 +236,7 @@ export const setupAppOrPage = (Component, componentProps) => {
 
 export const setupConfig = (args, options) => {
     if (args.length < 2) {
-        throw new TypeError('withMobX expects at least 2 arguments');
+        throw new TypeError(`withMobX expects at least 2 arguments`);
     }
     const counter = {count: 0},
           storeConstructorArgs = {},
@@ -275,24 +272,25 @@ export const setupIsServerAndProps = async (Component, config, ctx) => {
 
 export const setupOptions = (defaultOptions, options) => {
     if (!arguments.length) {
-        throw new TypeError('expects exactly 1 argument');
+        throw new TypeError(`expects exactly 1 argument`);
     }
     if (typeof options !== 'object') {
-        throw new TypeError('argument must be an object');
+        throw new TypeError(`argument must be an object`);
     }
     const _options = {...defaultOptions, ...options},
           {autoEnableStaticRenderingOnServer, defaultStoreFactory} = _options;
     if (typeof autoEnableStaticRenderingOnServer !== 'boolean') {
         throw new TypeError(
-            '"autoEnableStaticRenderingOnServer" option must be a boolean'
+            `"autoEnableStaticRenderingOnServer" option must be a boolean`
         );
     }
     if (!((defaultStoreFactory.prototype instanceof StoreFactory)
           || (defaultStoreFactory === StoreFactory))) {
-        throw new TypeError(
-            '"defaultStoreFactory" option must be a constructor that has' +
-                ' StoreFactory in its prototype chain or is identity with' +
-                ' StoreFactory');
+        throw new TypeError(reformat(`
+            "defaultStoreFactory" option must be a constructor that has
+            StoreFactory in its prototype chain or is identity with
+            StoreFactory
+        `));
     }
     return _options;
 };

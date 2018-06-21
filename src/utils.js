@@ -1,3 +1,4 @@
+import dedent from 'dedent';
 import App from 'next/app';
 
 /* global process */
@@ -77,3 +78,5 @@ export const ordinalSuffixOf = (i) => {
     }
     return n;
 };
+
+export const reformat = (s) => dedent(s).replace(/\s+/g, ' ').trim();
