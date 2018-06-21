@@ -17,18 +17,13 @@ export const extendsApp = (Component) => (
     (Component.prototype instanceof App) || (Component === App)
 );
 
-/* global global */
+/* global require */
 export const extendsDocument = (
     () => {
         let Document;
         if (isNode()) {
             try {
-                // Document = eval('require("next/document")').default;
-                // ^ prefer not to use eval... test solution below with
-                // webpack-bundle-anaylyzer
-                const p = 'next/document',
-                      u = (m) => global['require'](m);
-                Document = u(p).default;
+                Document = require('next/document').default;
             } catch (e) {}
         }
         return (
