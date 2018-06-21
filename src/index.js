@@ -63,11 +63,13 @@ export const makeWithMobX = (...args) => {
     if (typeof options !== 'object') {
         throw new TypeError(`argument must be an object`);
     }
+    const _options = setupOptions(defaultOptions, options);
     return (...args) => {
-        const _options = setupOptions(defaultOptions, options),
-              config = setupConfig(args, _options);
         return (Component) => (
-            makeWrapper(Component, {...config, options: _options})
+            makeWrapper(
+                Component,
+                {...(setupConfig(args, _options)), options: _options}
+            )
         );
     };
 };
