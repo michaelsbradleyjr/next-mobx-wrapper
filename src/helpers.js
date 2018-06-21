@@ -32,8 +32,6 @@ export const isServer = Symbol('isServer');
 
 export const makeAppComponent = (AppComponent, config) => {
     const _AppComponent = ({Component, pageProps, router}) => {
-        // ^ can pass _AppComponent to factory's "make" and StoreHouse
-        // instance's "handle" for use w/ WeakMap mechanism
         const {initialStoreConstructorArgs, isServer} = setupAppOrPage(
             _AppComponent, pageProps
         );
@@ -66,8 +64,6 @@ export const makeAppComponent = (AppComponent, config) => {
 
 export const makePageComponent = (PageComponent, config) => {
     const _PageComponent = (props) => {
-        // ^ can pass _Component to factory's "make" and StoreHouse
-        // instance's "handle" for use w/ WeakMap mechanism
         const {initialStoreConstructorArgs, isServer} = setupAppOrPage(
             _PageComponent, props
         );
