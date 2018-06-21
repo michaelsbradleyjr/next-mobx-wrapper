@@ -1,18 +1,6 @@
 import dedent from 'dedent';
 import App from 'next/app';
 
-/* global process */
-export const isNode = (
-    () => {
-        const isNode = (
-            Object.prototype.toString.call(
-                typeof process !== 'undefined' ? process : 0
-            ) === '[object process]'
-        );
-        return () => isNode;
-    }
-)();
-
 export const extendsApp = (Component) => (
     (Component.prototype instanceof App) || (Component === App)
 );
