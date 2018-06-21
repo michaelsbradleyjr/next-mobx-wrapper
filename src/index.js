@@ -55,15 +55,22 @@ export const defaultOptions = Object.freeze({
     defaultStoreFactory: StoreFactory
 });
 
-export const makeWithMobX = (options = defaultOptions) => (
-    (...args) => {
+export const makeWithMobX = (...args) => {
+    if (args.length > 1) {
+        throw new TypeError(`expects no more than 1 argument`);
+    }
+    const [options = defaultOptions] = args;
+    if (typeof options !== 'object') {
+        throw new TypeError(`argument must be an object`);
+    }
+    return (...args) => {
         const _options = setupOptions(defaultOptions, options),
               config = setupConfig(args, _options);
         return (Component) => (
             makeWrapper(Component, {...config, options: _options})
         );
     }
-);
+};
 
 export const defaultWithMobX = makeWithMobX();
 

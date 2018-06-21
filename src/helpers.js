@@ -257,12 +257,6 @@ export const setupIsServerAndProps = async (Component, config, ctx) => {
 };
 
 export const setupOptions = (defaultOptions, options) => {
-    if (!arguments.length) {
-        throw new TypeError(`expects exactly 1 argument`);
-    }
-    if (typeof options !== 'object') {
-        throw new TypeError(`argument must be an object`);
-    }
     const _options = {...defaultOptions, ...options},
           {autoEnableStaticRenderingOnServer, defaultStoreFactory} = _options;
     if (typeof autoEnableStaticRenderingOnServer !== 'boolean') {
