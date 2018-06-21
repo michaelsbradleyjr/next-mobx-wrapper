@@ -17,8 +17,6 @@ export const getInitialProps = (
     }
 );
 
-export const isServer = Symbol('isServer');
-
 export const makeAppComponent = (AppComponent, config) => {
     const _AppComponent = ({Component, pageProps, router}) => {
         const {initialStoreConstructorArgs, isServer} = setupAppOrPage(
@@ -205,23 +203,20 @@ export const resolveStoreConstructorArgs = async (config) => {
 };
 
 export const setupAppOrPage = (Component, componentProps) => {
-    let _isServer;
-    if (Component.hasOwnProperty(isServer)) {
-        _isServer = Component[isServer];
-    } else if (componentProps.hasOwnProperty(
-        '__withMobX_isServer')) {
-        _isServer = componentProps.__withMobX_isServer;
-    } else {
+    let initialStoreConstructorArgs, isServer;
+    if (!(componentProps.hasOwnProperty(
+        '__withMobX_initialStoreConstructorArgs')
+          && componentProps.hasOwnProperty('__withMobX_isServer'))) {
         throw new TypeError(
             `Wrapped component was not invoked as a Next.js App or Page`
         );
+    } else {
+        initialStoreConstructorArgs = (
+            componentProps.__withMobX_initialStoreConstructorArgs
+        );
+        isServer = componentProps.__withMobX_isServer;
     }
-    return {
-        initialStoreConstructorArgs:
-        componentProps.__withMobX_initialStoreConstructorArgs,
-        isServer:
-        _isServer
-    };
+    return {initialStoreConstructorArgs, isServer};
 };
 
 export const setupConfig = (args, options) => {
@@ -251,7 +246,6 @@ export const setupIsServerAndProps = async (Component, config, ctx) => {
     if (_isServer && config.options.autoEnableStaticRenderingOnServer) {
         useStaticRendering(true);
     }
-    Component[isServer] = _isServer;
     const props = await resolveStoreConstructorArgs(
         {...config,
          ctx,
