@@ -7,7 +7,7 @@ module.exports = {
     ],
     collectCoverage: true,
     coveragePathIgnorePatterns: [
-        "./node_modules",
-        "./jest-puppeteer.config.js"
+        './node_modules',
+        './jest-puppeteer.config.js'
     ]
 };
