@@ -8,7 +8,7 @@ export const getInitialProps = (
         const {isServer, props} = await setupIsServerAndProps(
             Wrapper, config, ctx
         );
-        props.props = (
+        props.__withMobX_wrappedProps = (
             Component.getInitialProps
                 ? {...(await Component.getInitialProps(...args))}
             : {}
@@ -286,7 +286,7 @@ export const setupPropsAndStores = (config) => {
     ];
 };
 
-export const unwrapProps = ({props}) => props.props;
+export const unwrapProps = ({props}) => props.__withMobX_wrappedProps;
 
 export const wrapAppComponent = (Component, props) => {
     return React.createElement(
