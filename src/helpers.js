@@ -5,15 +5,15 @@ import {extendsApp, ordinalSuffixOf, reformat} from './utils';
 
 export const getInitialProps = (
     async (args, Component, config, ctx, Wrapper) => {
-        const {isServer, props} = await setupIsServerAndProps(
+        const {isServer, wrapperProps} = await setupIsServerAndProps(
             Wrapper, config, ctx
         );
-        props.__withMobX_wrappedProps = (
+        wrapperProps.__withMobX_wrappedProps = (
             Component.getInitialProps
                 ? {...(await Component.getInitialProps(...args))}
             : {}
         );
-        return props;
+        return wrapperProps;
     }
 );
 
@@ -248,12 +248,12 @@ export const setupIsServerAndProps = async (Component, config, ctx) => {
     if (_isServer && config.options.autoEnableStaticRenderingOnServer) {
         useStaticRendering(true);
     }
-    const props = await resolveStoreConstructorArgs(
+    const wrapperProps = await resolveStoreConstructorArgs(
         {...config,
          ctx,
          isServer: _isServer},
     );
-    return {isServer: _isServer, props};
+    return {isServer: _isServer, wrapperProps};
 };
 
 export const setupOptions = (defaultOptions, options) => {
