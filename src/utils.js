@@ -26,6 +26,23 @@ export const isConstructor = (
     }
 )();
 
+/* global process */
+export const NODE_ENV = (
+    () => {
+        const NODE_ENV = (
+            (typeof process !== 'undefined'
+             && typeof process.env === 'object'
+             && process.env)
+                ? process.env.NODE_ENV
+                : void 0
+        );
+        if (typeof NODE_ENV === 'undefined') {
+            console.warn('NODE_ENV is undefined');
+        }
+        return NODE_ENV;
+    }
+)();
+
 export const ordinalSuffixOf = (i) => {
     const j = i % 10,
           k = i % 100;

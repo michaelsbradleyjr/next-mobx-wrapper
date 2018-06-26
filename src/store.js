@@ -1,4 +1,4 @@
-import {isConstructor, reformat} from './utils';
+import {isConstructor, NODE_ENV, reformat} from './utils';
 
 export class StoreFactory {
     constructor(Store, options = defaultStoreFactoryOptions) {
@@ -60,7 +60,7 @@ export class StoreFactory {
 
 export const defaultStoreHouseOptions = Object.freeze({
     singletons: true,
-    warnOnSingletons: true
+    warnOnSingletons: NODE_ENV === 'production' ? false : true
 });
 
 export class StoreHouse extends Map {
