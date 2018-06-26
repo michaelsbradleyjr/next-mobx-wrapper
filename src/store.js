@@ -104,18 +104,21 @@ export class StoreHouse extends Map {
         if (!this.singletons) {
             throw new Error(reformat(`
                 duplicate name "${name}" for use with identical Store
-                constructors within the same *no-singletons* StoreHouse
+                constructors within the same \`singletons:false\` StoreHouse
                 instance
             `));
         }
         if (this.warnOnSingletons) {
             const phrase = !isServer
-                  ? 'a new Store instance was not constructed and'
+                  ? reformat(`
+                      , a new Store instance was not constructed and the
+                      current value was not overwritten
+                  `)
                   : '';
             console.warn(reformat(`
                 additional use of name "${name}" for identical Store
-                constructors within the same *singletons-enforcing* StoreHouse
-                instance, ${phrase} the current value was not overwritten
+                constructors within the same \`singletons:true\` StoreHouse
+                instance${phrase}
             `));
         }
     }
