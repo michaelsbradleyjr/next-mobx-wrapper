@@ -6,6 +6,12 @@ export * from './store';
 // notes, todo
 /* =============================================================================
 
+(+) use dotenv example so that dev/testing have NODE_ENV defined browser-side,
+    but need a .babelrc.build file and --config-file flag for babel when
+    building the package so that the value isn't hard wired in the builds;
+    docs/examples will need to explain use of dotenv approach or similar for
+    downstream users of the wrapper
+
 (+) use WeakMap with page/app wrappers (pass wrapper to factory's "make" and on
     to StoreHouse instance's "handle"), involving a combo of keys and counters,
     to have a mechanism that expunges store-name keys in a StoreHouse; this
