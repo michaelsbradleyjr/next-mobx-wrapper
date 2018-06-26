@@ -60,7 +60,7 @@ export class StoreFactory {
 
 export const defaultStoreHouseOptions = Object.freeze({
     singletons: true,
-    warnOnSingletons: NODE_ENV === 'production' ? false : true
+    warnOnSingletons: NODE_ENV !== 'production'
 });
 
 export class StoreHouse extends Map {
